@@ -17,8 +17,8 @@ const connection = mysql.createConnection({
       port: 3306
     });
 
-app.get('/produtos', (req, res) => {
-  connection.query('SELECT * FROM produtos', (err, results) => {
+app.get('/estoque', (req, res) => {
+  connection.query('SELECT BarCode, Quantidade, fk_Tipos_MP_TipoMP FROM Estoque_MP', (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(results);
   });
