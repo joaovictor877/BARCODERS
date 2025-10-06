@@ -1,3 +1,8 @@
+const path = require('path');
+// Serve index.html na rota principal
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 const express = require('express');
 const mysql = require('mysql2');
 const app = express();
