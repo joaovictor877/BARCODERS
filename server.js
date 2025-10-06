@@ -5,12 +5,12 @@ const port = process.env.PORT || 3000;
 
 // Configuração do banco
 const connection = mysql.createConnection({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'teste',
-  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306
-});
+      host: 'barcodersdb.mysql.database.azure.com',
+      user: 'joaodmin1@barcodersdb',
+      password: 'Juca&ester', // Substitua pela sua senha real
+      database: 'estoque', // Substitua pelo nome do seu banco
+      port: 3306
+    });
 
 app.get('/produtos', (req, res) => {
   connection.query('SELECT * FROM produtos', (err, results) => {

@@ -19,14 +19,14 @@ document.addEventListener('DOMContentLoaded', setupSmoothScroll);
 
 // Estatísticas dinâmicas (simulação de dados vindos do banco)
 async function fetchStats() {
-    // Busca os produtos cadastrados do backend
+    // Busca os dados de estoque do backend
     try {
-        const response = await fetch('http://localhost:3000/produtos');
-        const produtos = await response.json();
-        // Exibe cada produto como estatística
-        return produtos.map(produto => ({
-            value: produto.nome,
-            label: `Qtd: ${produto.quantidade}`
+        const response = await fetch('/estoque');
+        const estoque = await response.json();
+        // Exibe cada lote de matéria-prima como estatística
+        return estoque.slice(0, 4).map(item => ({
+            value: item.BarCode,
+            label: `Tipo: ${item.fk_Tipos_MP_TipoMP} | Qtd: ${item.Quantidade}`
         }));
     } catch (error) {
         // Se falhar, mostra mensagem de erro
