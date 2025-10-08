@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const connection = require('./db'); // Importa conexão centralizada
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -12,6 +13,9 @@ const upload = multer();
 // Libera CORS apenas para seu domínio
 app.use(cors({ origin: 'https://barcoders.azurewebsites.net' }));
 app.use(express.json());
+
+// Servir arquivos estáticos do frontend (ajuste o caminho se necessário)
+app.use(express.static(path.join(__dirname, '..')));
 
 // Endpoint de estatísticas
 app.get('/estatisticas', (req, res) => {
@@ -31,10 +35,6 @@ app.post('/api/contact', upload.none(), (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
 });
-// Adicione isso para aceitar FormData:
-app.post('/api/contact', upload.none(), (req, res) => {
-  // Aqui você pode salvar no banco, enviar email, etc.
-  // Exemplo: apenas retorna sucesso
   res.status(200).json({ success: true });
 });
 
