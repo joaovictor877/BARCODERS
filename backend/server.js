@@ -15,7 +15,17 @@ app.use(cors({ origin: 'https://barcoders.azurewebsites.net' }));
 app.use(express.json());
 
 // Servir arquivos estáticos do frontend (ajuste o caminho se necessário)
-app.use(express.static(path.join(__dirname, '..')));
+// Se você está usando Vite/Tailwind no frontend, o build do frontend geralmente fica em uma pasta como '../dist'.
+// Altere o caminho abaixo para servir a pasta de build do Vite:
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// Endpoint de estoque (corrige erro 500 do /estoque)
+app.get('/estoque', (req, res) => {
+  connection.query('SELECT * FROM Estoque_MP', (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(results);
+  });
+});
 
 // Endpoint de estatísticas
 app.get('/estatisticas', (req, res) => {
@@ -29,12 +39,6 @@ app.get('/estatisticas', (req, res) => {
 app.post('/api/contact', upload.none(), (req, res) => {
   // Aqui você pode salvar no banco, enviar email, etc.
   // Exemplo: apenas retorna sucesso
-  res.status(200).json({ success: true });
-});
-
-app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
-});
   res.status(200).json({ success: true });
 });
 
