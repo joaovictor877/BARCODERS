@@ -3,6 +3,7 @@
 
 const mysql = require('mysql2');
 
+// Cria a conexão usando variáveis de ambiente ou valores padrão
 const connection = mysql.createConnection({
   host: process.env.DB_HOST || 'barcodersdb.mysql.database.azure.com',
   user: process.env.DB_USER || 'agente',
@@ -12,9 +13,12 @@ const connection = mysql.createConnection({
   ssl: { rejectUnauthorized: false }
 });
 
+// Testa a conexão ao iniciar o servidor
 connection.connect(err => {
   if (err) {
     console.error('Erro ao conectar ao MySQL:', err.message);
+    // Encerra o processo se não conseguir conectar
+    process.exit(1);
   } else {
     console.log('Conectado ao MySQL!');
   }

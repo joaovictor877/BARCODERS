@@ -3,14 +3,14 @@
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
-const upload = multer();
+const connection = require('./db'); // Importa conexão centralizada
+
 const app = express();
 const port = process.env.PORT || 3000;
-const connection = require('./db'); // Importa conexão centralizada
+const upload = multer();
 
 // Libera CORS apenas para seu domínio
 app.use(cors({ origin: 'https://barcoders.azurewebsites.net' }));
-
 app.use(express.json());
 
 // Endpoint de estatísticas
