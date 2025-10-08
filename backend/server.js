@@ -15,33 +15,39 @@ app.use(cors({ origin: 'https://barcoders.azurewebsites.net' }));
 app.use(express.json());
 
 // Servir arquivos estáticos do frontend (ajuste o caminho se necessário)
-// Se você está usando Vite/Tailwind no frontend, o build do frontend geralmente fica em uma pasta como '../dist'.
-// Altere o caminho abaixo para servir a pasta de build do Vite:
-app.use(express.static(path.join(__dirname, '../dist')));
+// Se o index.html está na raiz do projeto, use '..'.
+// Se o build do frontend está em 'dist', use '../dist'.
+app.use(express.static(path.join(__dirname, '..')));
 
-// Endpoint de estoque (corrige erro 500 do /estoque)
+// Endpoint de estoque
 app.get('/estoque', (req, res) => {
-  connection.query('SELECT * FROM Estoque_MP', (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+  connection.query('SELECT * FROM estoque_mp', (err, results) => {
+    if (err) {
+      console.error('Erro ao buscar estoque:', err);
+      return res.status(500).json({ error: err.message });
+    }
     res.json(results);
   });
 });
 
 // Endpoint de estatísticas
 app.get('/estatisticas', (req, res) => {
-  connection.query('SELECT COUNT(*) as total_itens FROM Estoque_MP', (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+  connection.query('SELECT COUNT(*) as total_itens FROM estoque_mp', (err, results) => {
+    if (err) {
+      console.error('Erro ao buscar estatísticas:', err);
+      return res.status(500).json({ error: err.message });
+    }
     res.json(results[0]);
   });
 });
 
-// Endpoint de contato
+// Endpoint de contato (corrige erro 404 do /api/contact)
 app.post('/api/contact', upload.none(), (req, res) => {
   // Aqui você pode salvar no banco, enviar email, etc.
-  // Exemplo: apenas retorna sucesso
   res.status(200).json({ success: true });
 });
 
 app.listen(port, () => {
+console.log(`Servidor rodando na porta ${port}`);
   console.log(`Servidor rodando na porta ${port}`);
 });
