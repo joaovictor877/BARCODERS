@@ -21,9 +21,11 @@ app.use(express.static(path.join(__dirname, '..')));
 
 // Endpoint de estoque
 app.get('/estoque', (req, res) => {
-  connection.query('SELECT * FROM estoque_mp', (err, results) => {
+  // Substitua 'estoque_mp' pelo nome correto da tabela que você quer listar
+  // Exemplo: 'materiais', 'produtos', etc.
+  connection.query('SHOW TABLES', (err, results) => {
     if (err) {
-      console.error('Erro ao buscar estoque:', err);
+      console.error('Erro ao buscar tabelas:', err);
       return res.status(500).json({ error: err.message });
     }
     res.json(results);
@@ -32,12 +34,27 @@ app.get('/estoque', (req, res) => {
 
 // Endpoint de estatísticas
 app.get('/estatisticas', (req, res) => {
-  connection.query('SELECT COUNT(*) as total_itens FROM estoque_mp', (err, results) => {
+  // Exemplo: conta todas as linhas de todas as tabelas do banco
+  connection.query('SHOW TABLES', (err, tables) => {
     if (err) {
-      console.error('Erro ao buscar estatísticas:', err);
+      console.error('Erro ao buscar tabelas:', err);
       return res.status(500).json({ error: err.message });
     }
-    res.json(results[0]);
+    // Conta o total de registros de cada tabela e retorna um resumo
+    const tableNames = tables.map(row => Object.values(row)[0]);
+    if (tableNames.length === 0) return res.json({});
+
+    let stats = {};
+    let processed = 0;
+    tableNames.forEach(table => {
+      connection.query(`SELECT COUNT(*) as total FROM \`${table}\``, (err, result) => {
+        processed++;
+        stats[table] = err ? null : result[0].total;
+        if (processed === tableNames.length) {
+          res.json(stats);
+        }
+      });
+    });
   });
 });
 
