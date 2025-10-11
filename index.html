@@ -258,6 +258,50 @@
             </div>
         </div>
     </footer>
+    <!-- AVISO DE DEV LOCAL (opcional, pode remover se não quiser) -->
+    <div id="devWarning" class="fixed top-0 left-0 w-full bg-yellow-200 text-yellow-900 text-center py-2 z-50 hidden">
+        Ambiente de desenvolvimento: endpoints de API simulados.
+    </div>
+    <script>
+    // MOCK DE ENDPOINTS PARA AMBIENTE LOCAL
+    (function() {
+        // Detecta se está rodando localmente
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (isLocal) {
+            // Mostra aviso de dev
+            document.getElementById('devWarning').classList.remove('hidden');
+
+            // Mock fetch para endpoints inexistentes
+            const originalFetch = window.fetch;
+            window.fetch = async function(resource, options) {
+                // Mock para /api/contact
+                if (typeof resource === 'string' && resource.endsWith('/api/contact')) {
+                    // Simula sucesso
+                    return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+                }
+                // Mock para /api/estatisticas ou /estatisticas
+                if (typeof resource === 'string' && (resource.endsWith('/api/estatisticas') || resource.endsWith('/estatisticas'))) {
+                    return new Response(JSON.stringify([
+                        { label: "Produtos", value: 120 },
+                        { label: "Movimentações", value: 350 },
+                        { label: "Alertas", value: 5 },
+                        { label: "Usuários", value: 8 }
+                    ]), { status: 200, headers: { 'Content-Type': 'application/json' } });
+                }
+                // Mock para /estoque
+                if (typeof resource === 'string' && resource.endsWith('/estoque')) {
+                    return new Response(JSON.stringify([
+                        { id: 1, nome: "Matéria-Prima A", quantidade: 50 },
+                        { id: 2, nome: "Matéria-Prima B", quantidade: 30 }
+                    ]), { status: 200, headers: { 'Content-Type': 'application/json' } });
+                }
+                // Fallback para fetch normal
+                return originalFetch.apply(this, arguments);
+            };
+        }
+    })();
+    </script>
+
     <script>
     document.addEventListener('DOMContentLoaded', async function() {
         // Contato
@@ -278,6 +322,7 @@
                     // Detecta ambiente local ou produção
                     const apiUrl = window.location.hostname === 'localhost' ?
                         'http://localhost:3000/api/contact' : '/api/contact';
+                    // Em local, o fetch será interceptado pelo mock acima
                     const response = await fetch(apiUrl, {
                         method: 'POST',
                         body: formData
