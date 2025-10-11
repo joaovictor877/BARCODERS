@@ -57,11 +57,19 @@ app.get('/estatisticas', (req, res) => {
     });
   });
 });
-
-// Endpoint de contato (corrige erro 404 do /api/contact)
+// Endpoint de contato: salva mensagem no banco
 app.post('/api/contact', upload.none(), (req, res) => {
-  // Aqui você pode salvar no banco, enviar email, etc.
-  res.status(200).json({ success: true });
+  const { nome, email, assunto, mensagem, projeto } = req.body;
+  const data_envio = new Date();
+
+  const sql = 'INSERT INTO contato (nome, email, assunto, mensagem, data_envio, projeto) VALUES (?, ?, ?, ?, ?, ?)';
+  connection.query(sql, [nome, email, assunto, mensagem, data_envio, projeto], (err, result) => {
+    if (err) {
+      console.error('Erro ao inserir mensagem:', err);
+      return res.status(500).json({ error: 'Erro ao enviar mensagem' });
+    }
+    res.json({ success: true, message: 'Mensagem enviada com sucesso!' });
+  });
 });
 
 app.listen(port, () => {
