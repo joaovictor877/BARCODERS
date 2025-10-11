@@ -260,23 +260,6 @@
     </footer>
     <script>
     document.addEventListener('DOMContentLoaded', async function() {
-        // Estatísticas
-        try {
-            const res = await fetch('/estatisticas');
-            if (!res.ok) throw new Error('Erro ao buscar estatísticas');
-            const stats = await res.json();
-            document.getElementById('statsGrid').innerHTML = `
-                <div class="bg-white rounded-lg p-8 shadow text-indigo-700">
-                    <div class="text-4xl font-bold mb-2">${stats.total_itens ?? 0}</div>
-                    <div class="text-lg font-medium">Itens em Estoque</div>
-                </div>
-            `;
-        } catch (e) {
-            document.getElementById('statsGrid').innerHTML = `
-                <div class="col-span-4 text-white">Erro ao carregar estatísticas.</div>
-            `;
-        }
-
         // Contato
         const form = document.getElementById('contactForm');
         if (form) {
