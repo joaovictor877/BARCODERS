@@ -19,44 +19,7 @@ app.use(express.json());
 // Se o build do frontend está em 'dist', use '../dist'.
 app.use(express.static(path.join(__dirname, '..')));
 
-// Endpoint de estoque
-app.get('/estoque', (req, res) => {
-  // Substitua 'estoque_mp' pelo nome correto da tabela que você quer listar
-  // Exemplo: 'materiais', 'produtos', etc.
-  connection.query('SHOW TABLES', (err, results) => {
-    if (err) {
-      console.error('Erro ao buscar tabelas:', err);
-      return res.status(500).json({ error: err.message });
-    }
-    res.json(results);
-  });
-});
-
-// Endpoint de estatísticas
-app.get('/estatisticas', (req, res) => {
-  // Exemplo: conta todas as linhas de todas as tabelas do banco
-  connection.query('SHOW TABLES', (err, tables) => {
-    if (err) {
-      console.error('Erro ao buscar tabelas:', err);
-      return res.status(500).json({ error: err.message });
-    }
-    // Conta o total de registros de cada tabela e retorna um resumo
-    const tableNames = tables.map(row => Object.values(row)[0]);
-    if (tableNames.length === 0) return res.json({});
-
-    let stats = {};
-    let processed = 0;
-    tableNames.forEach(table => {
-      connection.query(`SELECT COUNT(*) as total FROM \`${table}\``, (err, result) => {
-        processed++;
-        stats[table] = err ? null : result[0].total;
-        if (processed === tableNames.length) {
-          res.json(stats);
-        }
-      });
-    });
-  });
-});
+// ...rotas removidas...
 // Endpoint de contato: salva mensagem no banco
 app.post('/api/contact', upload.none(), (req, res) => {
   const { nome, email, assunto, mensagem, projeto } = req.body;
