@@ -292,7 +292,10 @@
                 errorMsg.classList.add('hidden');
                 try {
                     const formData = new FormData(form);
-                    const response = await fetch('/api/contact', {
+                    // Detecta ambiente local ou produção
+                    const apiUrl = window.location.hostname === 'localhost' ?
+                        'http://localhost:3000/api/contact' : '/api/contact';
+                    const response = await fetch(apiUrl, {
                         method: 'POST',
                         body: formData
                     });
